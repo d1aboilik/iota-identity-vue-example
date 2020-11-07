@@ -2,14 +2,15 @@ const path = require('path')
 const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (env = {}) => ({
   mode: env.prod ? 'production' : 'development',
   devtool: env.prod ? 'source-map' : 'eval-cheap-module-source-map',
   entry: path.resolve(__dirname, './src/main.js'),
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/'
+    path: path.resolve(__dirname, './'),
+    publicPath: '/'
   },
   resolve: {
     alias: {
@@ -42,6 +43,14 @@ module.exports = (env = {}) => ({
     ]
   },
   plugins: [
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'node_modules/iota-identity-wasm-test/web/iota_identity_wasm_bg.wasm'),
+          to: path.resolve(__dirname, 'iota_identity_wasm_bg.wasm'),
+        }
+      ],
+    }),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css'
